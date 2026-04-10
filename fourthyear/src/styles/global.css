@@ -97,18 +97,7 @@ img { display:block; max-width:100%; }
 ul { list-style:none; }
 button { font-family:var(--font); cursor:pointer; border:none; outline:none; }
 input,textarea,select { font-family:var(--font); }
-/* canvas عام  */
-canvas {
-  position: fixed !important;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: -1 !important;
-  /* ليكون خلف كل شيء في كل الصفحات */
-  pointer-events: none;
-  /* لكي لا يمنع الضغط على الأزرار */
-}
+
 /* ── Scrollbar ─────────────────────────────────────────── */
 ::-webkit-scrollbar { width:5px; height:5px; }
 ::-webkit-scrollbar-track { background:var(--navy-800); }

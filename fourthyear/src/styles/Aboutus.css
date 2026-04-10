@@ -2,15 +2,7 @@
 html {
     scroll-behavior: smooth;
 }
-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: -1 !important;
-    /* خلف كل شيء دائماً */
-    pointer-events: none;
-    /* النقرات تمر من خلاله */
-}
+
 
 /* تنسيق بسيط للرابط لضمان عدم تغير لون الأيقونة */
 .scroll-link {
