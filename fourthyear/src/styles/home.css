@@ -1,0 +1,16 @@
+.herologo:hover{
+transform:skewY(-15deg);
+transition-duration:500ms;
+transition-timing-function: ease-in-out;
+}
+.herologo{
+    transition: all 1.5s ease-out;
+     padding-top: 120px;
+    max-width: 100%;
+    height: auto;  /*مشان تحافظ على أبعادها وما تمط*/
+    width: clamp(150px, 30vw, 400px);/* بتصغر لـ 150px وتكبر لـ 400px حسب عرض     */
+    filter: drop-shadow(0 0 10px rgba(255,255,255,0.3)) drop-shadow(0 15px 15px rgba(0,0,0, 0.4));
+    animation: fadeIn 1.5s ease-out forwards,
+            float 4s ease-in-out infinite 1.5s;
+                
+}

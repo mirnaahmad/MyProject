@@ -1,0 +1,362 @@
+/* تجعل أي انتقال داخل الصفحة يتم بنعومة */
+html {
+    scroll-behavior: smooth;
+}
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1 !important;
+    /* خلف كل شيء دائماً */
+    pointer-events: none;
+    /* النقرات تمر من خلاله */
+}
+
+/* تنسيق بسيط للرابط لضمان عدم تغير لون الأيقونة */
+.scroll-link {
+    position: relative;
+    z-index: 10;
+    cursor: pointer;
+    display: inline-block;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* لضمان وجود مساحة كافية عند الوصول للقسم (Offset) */
+#team-section {
+    scroll-margin-top: 80px;
+    /* لكي لا يلتصق العنوان بحافة المتصفح العلوية */
+}
+.about-us-container {
+    min-height: 100vh;
+    z-index: 1;
+    width: 100%;
+    color: white;
+    direction: rtl;
+    /* للتوافق مع اللغة العربية */
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    /* لمنع أي سكرول عرضي مزعج */
+}
+
+/* قسم الهيرو (About Hero) */
+.about-hero {
+    width: 100%;
+    min-height: 90vh;
+   position: relative;
+   z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 20px;
+margin-bottom: 50px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.hero-title {
+    font-size: 3.8rem;
+    padding-top: 10px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #fff, #4f7fb3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-description {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.5rem;
+    line-height: 1.8;
+}
+
+/* التلميح البصري للفريق (Hero Badge) */
+.hero-team-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-top: 60px;
+}
+
+.avatar-group {
+    display: flex;
+    align-items: center;
+    direction: ltr;
+    /* لجعل التداخل يظهر بشكل صحيح */
+}
+
+.mini-avatar,
+.avatar-more {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: rgba(79, 127, 179, 0.15);
+    border: 2px solid #4f7fb3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: -15px;
+    /* تأثير التداخل */
+    backdrop-filter: blur(8px);
+    color: #4f7fb3;
+    transition: transform 0.3s ease;
+}
+
+.avatar-more {
+    background: #4f7fb3;
+    color: white;
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-left: -15px;
+}
+
+.hero-team-badge span {
+    font-size: 1rem;
+    color: #4f7fb3;
+    font-weight: 500;
+}
+
+
+.scroll-hint {
+    margin-top: 50px;
+    cursor: pointer !important;
+    position: relative;
+    z-index: 50;
+    padding: 10px;
+    padding-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.7;
+}
+.scroll-hint p {
+    margin-bottom: 5px;
+    pointer-events: none;
+   
+}
+
+.bounce-icon {
+    animation: bounce 2s infinite;
+    color: #4f7fb3;
+}
+
+@keyframes bounce {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-10px);
+    }
+
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+/* العنوان الفاصل بين الهيرو والشبكة */
+.section-divider {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 100px 0 40px 0;
+    margin-top: 20px;
+}
+
+.main-title {
+    font-size: 2.2rem;
+    color: white;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.main-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: #4f7fb3;
+    border-radius: 2px;
+}
+
+/* قسم شبكة الأعضاء (Team Grid) */
+.team-grid-section {
+    padding: 40px 20px 100px 20px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    /* 5 أعضاء في الصف الواحدة */
+    gap: 30px;
+    max-width: 1200px;
+    width: 100%;
+}
+
+/* تنسيق بطاقة العضو الأساسي - ستايل Glassmorphism */
+.member-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+
+    /* مهم جداً لجعل الطبقات تترتب داخل الكرت */
+    position: relative;
+    overflow: hidden;
+    /* لمنع المحتوى من الخروج عن حدود الكرت المستديرة */
+    min-height: 300px;
+    /* تحديد ارتفاع أدنى للكرت لضمان ظهور المعلومات الإضافية بشكل مريح */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.member-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(79, 127, 179, 0.3);
+    border-color: #4f7fb3;
+}
+/* --- تنسيق الطبقات داخل الكرت --- */
+
+/* الطبقة 1: المحتوى الأساسي (الأيقونة، الاسم، الدور) */
+.card-front {
+    width: 100%;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    opacity: 1;
+    /* ظاهرة بشكل افتراضي */
+}
+
+/* تأثير الهوفر على الطبقة الأمامية: تختفي وتتحرك قليلاً للأعلى */
+.member-card:hover .card-front {
+    opacity: 0;
+    transform: translateY(-20px);
+}
+
+/* الطبقة 2: المعلومات الإضافية (النبذة) */
+.card-back {
+    position: absolute;
+    /* توضع فوق الطبقة الأمامية تماماً */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    opacity: 0;
+    /* مخفية بشكل افتراضي */
+    transform: translateY(20px);
+    /* تبدأ من الأسفل قليلاً لتأثير الدخول */
+
+    background: rgba(13, 110, 253, 0.1);
+    /* إضافة تدرج أزرق ناعم عند الخلفية */
+}
+
+/* تأثير الهوفر على الطبقة الخلفية: تظهر وتعود لمكانها */
+.member-card:hover .card-back {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* أيقونة العضو المضيئة */
+.member-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 2px solid #4f7fb3;
+    box-shadow: 0 0 15px rgba(79, 127, 179, 0.5);
+    margin: 0 auto 20px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4f7fb3;
+}
+.info-title {
+    font-size: 1.1rem;
+    color: #4f7fb3;
+    /* لون نيون للعناوين */
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.member-info {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.7;
+    margin: 0;
+}
+
+.member-name {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    color: white;
+}
+
+.member-role {
+    color: #4f7fb3;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* التجاوب (Responsive) */
+@media (max-width: 1200px) {
+    .team-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 992px) {
+    .team-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .hero-title {
+        font-size: 2.8rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .about-hero {
+        padding: 60px 20px;
+    }
+
+    .hero-title {
+        font-size: 2.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .team-grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
