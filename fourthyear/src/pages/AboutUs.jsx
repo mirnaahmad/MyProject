@@ -4,16 +4,16 @@ import NetworkCanvas from '../components/NetworkCanvas';
 import { Users, ShieldCheck, Briefcase, Rocket, Cpu, UserSquare, Zap, CalendarDays, LibraryBig, Award, ArrowDown } from 'lucide-react';
 
 const teamMembersData = [
-  { id: 1, name: "عبد السلام الصوان", role: "رئيس الهيئة الطلابية",info:"tgdtdtdoohop;ppuirfd", icon: <Users size={32} /> },
-  { id: 2, name: "شهد عبّارة", role: "نائب الرئيس / مسؤول مكتب التدريب",info:"tgdtdtdoohop;ppuirfd", icon: <ShieldCheck size={32} /> },
-  { id: 3, name: "رقية الأبرش", role: "مسؤول المكتب الأكاديمي", info:"tgdtdtdoohop;ppuirfd",icon: <Briefcase size={32} /> },
-  { id: 4, name: "هبه شيخ السوق", role: "معاون المكتب الأكاديمي",info:"tgdtdtdoohop;ppuirfd", icon: <Rocket size={32} /> },
-  { id: 5, name: "همام الصّافي", role: "مسؤول مكتب التنظيم",info:"tgdtdtdoohop;ppuirfd", icon: <Cpu size={32} /> },
-  { id: 6, name: "مريم عبد المولى", role: "مسؤول الإعلام", info:"tgdtdtdoohop;ppuirfd",icon: <UserSquare size={32} /> },
-  { id: 7, name: "عفاف شاهين", role: "معاون في مكتب التنظيم", info:"tgdtdtdoohop;ppuirfd",icon: <Zap size={32} /> },
-  { id: 8, name: "أسامة دعبوس", role: "مسؤوول مكتب التقييم والمتابعة", info:"tgdtdtdoohop;ppuirfd",icon: <CalendarDays size={32} /> },
-  { id: 9, name: "أنطون عازار", role: "معاون مكتب التدريب",info:"tgdtdtdoohop;ppuirfd" ,icon: <LibraryBig size={32} /> },
-  { id: 10, name: "نسمة الحصرية", role: "مسؤوول مكتب الفعاليات",info:"tgdtdtdoohop;ppuirfd" ,icon: <Award size={32} /> },
+  { id: 1, name: "عبد السلام الصوان", role: "رئيس الهيئة الطلابية",info:"تمثيل الطلاب أمام الإدارة والإشراف العام على كافة المكاتب والأنشطة لضمان سير العمل الطلابي بفعالية", icon: <Users size={32} /> },
+  { id: 2, name: "شهد عبّارة", role: "نائب الرئيس / مسؤول مكتب التدريب",info:"تنظيم الدورات التدريبية والورشات اعلمية لتطوير مهارات الطلاب الاكاديمية والمهنية وبطهم بسوق العمل", icon: <ShieldCheck size={32} /> },
+  { id: 3, name: "رقية الأبرش", role: "مسؤول المكتب الأكاديمي", info:"متابعة الشؤون الدراسية للطلاب، وتوفير المصادر العلمية والتنسيق مع الأقسام الأكاديمية لحل المشكلات التعليمية",icon: <Briefcase size={32} /> },
+  { id: 4, name: "هبه شيخ السوق", role: "معاون المكتب الأكاديمي",info:"دعم المكتب الأكاديمي في تنظيم المحاضرات الإضافية وتنسيق الملحقات الدراسية وتسهيل التواصل مع الطلاب", icon: <Rocket size={32} /> },
+  { id: 5, name: "همام الصّافي", role: "مسؤول مكتب التنظيم",info:"الإشراف على التنظيم اللوجستي للفعاليات، وإدارة الموارد البشرية وتنسيق الجهود بين أعضاء الهيئة", icon: <Cpu size={32} /> },
+  { id: 6, name: "مريم عبد المولى", role: "مسؤول الإعلام", info:"إدارة المنصات الرقمية، تغطية النشاطات، وصياغة المحتوى الإعلامي الذي يعبر عن صوت الطلاب وأنشطتهم",icon: <UserSquare size={32} /> },
+  { id: 7, name: "عفاف شاهين", role: "معاون في مكتب التنظيم", info:"المساهمة في تخطيط الفعاليات الميدانية وضمان التزام الفرق التنفيذية بالخطة الموضوعة والجدول الزمني",icon: <Zap size={32} /> },
+  { id: 8, name: "أسامة دعبوس", role: "مسؤوول مكتب التقييم والمتابعة", info:"قياس أداء المكاتب والأنشطة، وجمع ملاحظات الطلاب لتحسين جودة الخدمات المقدمة من الهيئة",icon: <CalendarDays size={32} /> },
+  { id: 9, name: "أنطون عازار", role: "معاون مكتب التدريب",info:"التنسيق مع المدربين والجهات الخارجية لتجهيز اللوازم اللوجستية والتقنية الخاصة بالجلسات التدريبية" ,icon: <LibraryBig size={32} /> },
+  { id: 10, name: "نسمة الحصرية", role: "مسؤوول مكتب الفعاليات",info:"بتكار وتنظيم المهرجانات، المسابقات، والفعاليات الاجتماعية والترفيهية التي تعزز الروح الجماعية في الكلية" ,icon: <Award size={32} /> },
 ];
 
 const AboutUs = () => {
