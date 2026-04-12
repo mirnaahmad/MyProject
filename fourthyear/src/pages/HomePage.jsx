@@ -7,7 +7,7 @@ import NetworkCanvas from '../components/NetworkCanvas'
 import { EVENTS, STATS } from '../data/mockData'
 import logo from '../assets/logo.png'
 import "../styles/home.css"
-// A reusable counter Component
+
 const Counter = ({ from, to, prefix = '' }) => {
   const nodeRef = useRef()
   const inView = useInView(nodeRef, { once: true, margin: '-50px' })
@@ -40,7 +40,7 @@ export default function HomePage() {
 
   return (
     <>
-      {/* ── HERO ── */}
+   
       <section className="page-hero" style={{ minHeight: '10vh', padding: 0, justifyContent:'center', display:'flex',alignItems:'center' }}>
         <NetworkCanvas />
         <section style={{display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',padding:'20px'}}>
@@ -97,7 +97,7 @@ export default function HomePage() {
       </section>
       </section>
 
-      {/* ── EVENTS ── */}
+      
       <section className="section" id="events">
         <div className="container">
           <div className="section-header">

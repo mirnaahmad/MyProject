@@ -198,7 +198,6 @@ margin-bottom: 50px;
 .team-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    /* 5 أعضاء في الصف الواحدة */
     gap: 30px;
     max-width: 1200px;
     width: 100%;
@@ -316,7 +315,6 @@ margin-bottom: 50px;
     font-weight: 500;
 }
 
-/* التجاوب (Responsive) */
 @media (max-width: 1200px) {
     .team-grid {
         grid-template-columns: repeat(4, 1fr);
