@@ -9,7 +9,7 @@ export default function AuthPage() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    // Basic network bg for auth page
+  
     const c = document.getElementById('auth-bg-canvas')
     if(!c) return
     const ctx = c.getContext('2d')
@@ -104,7 +104,7 @@ export default function AuthPage() {
                   <div className="form-group">
                     <input type={showPass ? 'text' : 'password'} className="form-input form-input-light" placeholder="كلمة المرور" required />
                     <Lock size={18} className="form-icon" />
-                    <button type="button" onClick={() => setShowPass(!showPass)} style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: '14px', background: 'none', color: showPass ? 'var(--accent)' : 'var(--gray-400)' }}>
+                    <button type="button" onClick={() => setShowPass(!showPass)} style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: '14px', background: 'none', color: showPass ? 'var(--accent)' : 'var(--gray-400)',display:"flex",cursor:'pointer',padding:0,alignItems:'center' }}>
                       {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                   </div>

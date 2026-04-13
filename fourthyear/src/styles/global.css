@@ -172,7 +172,7 @@ box-shadow: var(--shadow-blue-lg);
 .badge-navy  { background:var(--navy-600); color:var(--blue-200); }
 
 /* ── Forms ─────────────────────────────────────────────── */
-.form-group { margin-bottom:18px; position:relative; }
+.form-group { margin-bottom:18px; position:relative;gap: 24px; }
 .form-label { display:block; font-size:.82rem; font-weight:600; color:var(--gray-300); margin-bottom:6px; }
 .form-input {
   width:100%; background:var(--navy-700); border:1.5px solid rgba(91,155,213,.2);
@@ -182,13 +182,13 @@ box-shadow: var(--shadow-blue-lg);
 }
 .form-input:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-glow); }
 .form-input::placeholder { color:var(--gray-600); }
-.form-input-light {
+.form-input-light {padding-left:42px ;padding-right: 42px;
   background:var(--gray-100); border:1.5px solid var(--gray-200);
   color:var(--navy-800); direction:ltr; text-align:left;
 }
 .form-input-light:focus { border-color:var(--accent); background:var(--white); }
 .form-input-light::placeholder { color:var(--gray-400); }
-.form-icon { position:absolute; top:50%; transform:translateY(-50%); right:13px; color:var(--gray-500); pointer-events:none; }
+.form-icon { position:absolute; top:50%; transform:translateY(-50%); right:13px; color:var(--gray-500); pointer-events:none ;text-decoration: ltr; }
 .form-error { font-size:.76rem; color:var(--danger); margin-top:4px; }
 .input-error { border-color:var(--danger) !important; }
 
