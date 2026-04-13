@@ -1,0 +1,109 @@
+.mainCon {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: #0b1d2ff7;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  -moz-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  -o-transform: translateZ(0);
+}
+.internalCon {
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  padding: 40px 35px;
+  border-radius: 15px;
+  width: 500px;
+  min-height: 550px;
+  max-width: 95%;
+  max-height: 85vh;
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  -ms-border-radius: 15px;
+  -o-border-radius: 15px;
+}
+
+.inputs {
+  padding: 5px 10px;
+  background-color: #bbd4ebff;
+  color: #0b1d2fec;
+  font-size: 15px;
+  font-family: var(--font);
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  margin-top: 3px;
+  width: 100%;
+  outline: none;
+  box-shadow: 2px 2px 2px 2px #9ecae3ff;
+  transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -ms-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  -ms-border-radius: 8px;
+  -o-border-radius: 8px;
+}
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.fieldLabel {
+  display: block;
+  color: #cadcf2ff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.but {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #bbd4ebff;
+  color: #12549cff;
+  padding: 5px;
+  font-size: 15px;
+  font-weight: bold;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 8px;
+  cursor: pointer;
+  height: 40px;
+  width: 95px;
+  box-shadow: 2px 2px 2px 2px #9ecae3ff;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  -ms-border-radius: 8px;
+  -o-border-radius: 8px;
+}
+.but:hover {
+  background-color: rgb(9, 45, 79);
+  color: white;
+  width: 110px;
+  box-shadow: 2px 2px 2px 2px rgb(17, 64, 91);
+  transition-duration: 20ms;
+}
+.check:hover {
+  scale: 1.1;
+}
