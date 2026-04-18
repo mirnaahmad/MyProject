@@ -47,7 +47,7 @@ export default function Navbar() {
               الهيئة الطلابية<br/>كلية الهندسة المعلوماتية
             </div>
           </Link>
-          <hr/>
+        
 
           <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }} className="d-none-mobile">
             {navLinks.map(link => (
