@@ -316,7 +316,6 @@ export default function EventDetailPage() {
           inputsData={inputsData}
           setInputsData={setInputsData}
           selectedEventTitle={event.title}
-          eventLink={event.eventLink}
           eventId={event.id}
           setRegisteredEvents={setRegisteredEvents}
         />

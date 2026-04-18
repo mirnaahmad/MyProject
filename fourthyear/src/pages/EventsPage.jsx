@@ -20,7 +20,6 @@ export default function EventsPage() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [selectedEventTitle, setSelectedEventTitle] = useState("");
   const [selectedEventId, setSelectedEventId] = useState(null);
-  const [eventLink, setEventLink] = useState("");
   const [registeredEvents, setRegisteredEvents] = useState(() => {
     const saved = localStorage.getItem("registeredEvents");
     return saved ? JSON.parse(saved) : [];
@@ -40,7 +39,7 @@ export default function EventsPage() {
   return (
     <>
       {/* ── HERO ── */}
-      <section className="page-hero">
+      <section className="page-hero" style={{ height: "300px" }}>
         <NetworkCanvas />
         <div className="container page-hero-content">
           <motion.h1
@@ -65,12 +64,7 @@ export default function EventsPage() {
       </section>
 
       {/* ── UPCOMING EVENTS ── */}
-      <section
-        className="section"
-        style={{
-          backgroundColor: "#27384bff",
-        }}
-      >
+      <section className="section">
         <div className="container">
           <h2 className="section-title"> الفعاليات القادمة</h2>
 
@@ -78,19 +72,7 @@ export default function EventsPage() {
           {featuredEvent && (
             // هون منفحص العنصر اليساري اذا كان موجود منسمح للديف بالظهور واذا مو موجود لا ترسم شي ابدا
             <motion.div
-              className="card"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "minmax(0, 1fr) auto",
-                gap: "30px",
-                alignItems: "center",
-                padding: "36px 40px",
-                marginBottom: "36px",
-                background:
-                  "linear-gradient(135deg, var(--navy-700), var(--navy-600))",
-                position: "relative",
-                overflow: "hidden",
-              }}
+              className="card cardit"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
             >
@@ -162,7 +144,7 @@ export default function EventsPage() {
                     className="btn btn-primary"
                     onClick={() => {
                       setSelectedEventTitle(featuredEvent.title);
-                      setEventLink(featuredEvent.eventLink);
+                      // setEventLink(featuredEvent.eventLink);
                       setSelectedEventId(featuredEvent.id);
                       setIsSuccess(registeredEvents.includes(featuredEvent.id));
                       setIsOpen(true);
@@ -184,16 +166,7 @@ export default function EventsPage() {
               <img
                 src={featuredEvent.speakerImg}
                 alt={featuredEvent.speaker}
-                style={{
-                  width: "150px",
-                  height: "150px",
-                  borderRadius: "50%",
-                  objectFit: "cover",
-                  border: "3px solid rgba(74,144,226,.5)",
-                  boxShadow: "0 0 30px rgba(74,144,226,.3)",
-                  display: "block",
-                }}
-                className="d-none-mobile"
+                className="d-none-mobile speakerImage"
               />
             </motion.div>
           )}
@@ -225,14 +198,7 @@ export default function EventsPage() {
                 <img
                   src={event.speakerImg}
                   alt={event.speaker}
-                  style={{
-                    width: "100px",
-                    height: "100px",
-                    borderRadius: "12px",
-                    objectFit: "cover",
-                    border: "2px solid rgba(74,144,226,.3)",
-                  }}
-                  className="d-none-mobile"
+                  className="d-none-mobile speakerImage"
                 />
 
                 <div>
@@ -312,7 +278,7 @@ export default function EventsPage() {
                       className="btn btn-primary"
                       onClick={() => {
                         setSelectedEventTitle(event.title);
-                        setEventLink(event.eventLink);
+
                         setSelectedEventId(event.id);
                         setIsSuccess(registeredEvents.includes(event.id));
                         setIsOpen(true);
@@ -413,11 +379,41 @@ export default function EventsPage() {
 
       <style>{`
         @media (max-width: 768px) {
-          .d-none-mobile { display: none !important; }
-          .row-to-col { flex-direction: column; align-items: center !important;
-           gap: 12px !important; }
-          .actions-group { flex-direction: row !important; }
-        }
+          .d-none-mobile { display: none !important;  }
+          .section {padding:40px 0;}
+          .card {
+          grid-template-columns: 1fr auto !important
+          gap:12px !important
+          padding:12px 16px !important
+          margin-bottom:12px;
+          }
+          .card h4{
+          font-size:1rem !important;
+          margin-bottom:4px !important;}
+          .row-to-col { flex-direction: column !important;
+          //  align-items: center
+            min-width:60px ;
+           gap: 8px !important; }
+           .row-to-col div:first-child {
+           scale:0.8;
+           margin:-5px 0;
+           }
+          .actions-group { flex-direction: row !important;
+          gap:5px !important; }
+        
+          .actions-group .btn {
+          padding:4px 10px !important;
+          font-size:0.75rem !important;
+          height:auto !important;
+          width:auto !important;
+          }
+          .cardit {
+          padding:20px !important;
+          margin-bottom:20px !important;
+          }
+          .cardit h3 {
+          font-size:1.2rem !important;
+      }}
       `}</style>
 
       {isOpen && (
@@ -428,7 +424,6 @@ export default function EventsPage() {
           inputsData={inputsData}
           setInputsData={setInputsData}
           selectedEventTitle={selectedEventTitle}
-          eventLink={eventLink}
           eventId={selectedEventId}
           setRegisteredEvents={setRegisteredEvents}
         />
