@@ -17,5 +17,10 @@ transition-timing-function: ease-in-out;
 @media(max-width:480px){
     .herologo{
         display:none;
-    }
+    }}
+.homecontainer{
+    background: radial-gradient(ellipse 80% 60% at 50% 0%,
+                var(--navy-600) 0%,
+                var(--navy-900) 80%);
+
 }

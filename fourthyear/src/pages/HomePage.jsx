@@ -40,7 +40,7 @@ export default function HomePage() {
 
   return (
     <>
-   
+      <div className='homecontainer'>
       <section className="page-hero" style={{ minHeight: '10vh', padding: 0, justifyContent:'center', display:'flex',alignItems:'center' }}>
         <NetworkCanvas />
         <section style={{display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',padding:'20px'}}>
@@ -84,8 +84,8 @@ export default function HomePage() {
          
         </div>
         <div style={{flex: '1 1 300px', // بيسمح للوغو يتمدد ويتقلص، وبس يصير العرض أقل من 300px بينزل لسطر جديد
-  maxWidth: '100%',
-  display: 'flex',
+            maxWidth: '100%',
+            display: 'flex',
             justifyContent: 'center',
             
           }}>
@@ -98,7 +98,7 @@ export default function HomePage() {
       </section>
 
       
-      <section className="section" id="events">
+      <section className="section " id="events">
         <div className="container">
           <div className="section-header">
             <h2 className="section-title">أبرز الفعاليات القادمة</h2>
@@ -133,7 +133,8 @@ export default function HomePage() {
             ))}
           </div>
         </div>
-      </section>
+        </section>
+        </div>
 
       {/* ── STATS & ABOUT ── */}
       <section className="section section-dark" id="about">
