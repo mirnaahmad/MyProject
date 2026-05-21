@@ -21,7 +21,7 @@ export default function Footer() {
                 </ul>
              </div>
           </div>
-{/*  */}
+
            <div>
             <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--white)', marginBottom: '18px', paddingBottom: '10px', borderBottom: '1px solid rgba(91,155,213,.2)' }}>روابط سريعة</div>
             <ul style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>

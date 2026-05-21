@@ -45,7 +45,7 @@ export default function AuthPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    // simulate login directly to admin for demo
+   
     navigate('/admin/dashboard')
   }
 
@@ -59,7 +59,7 @@ export default function AuthPage() {
 
       <div style={{ width: '100%', maxWidth: '900px', display: 'grid', gridTemplateColumns: '1fr 1fr', minHeight: '560px', borderRadius: 'var(--radius-xl)', overflow: 'hidden', boxShadow: '0 30px 80px rgba(0,0,0,.6)', border: '1px solid rgba(74,144,226,.2)', position: 'relative', zIndex: 1 }} className="auth-split">
         
-        {/* Mobile Tabs */}
+       
         <div className="auth-mobile-tabs d-none d-show-mobile" style={{ gridColumn: '1 / -1', background: 'var(--navy-800)', padding: '12px' }}>
           <div style={{ display: 'flex', background: 'rgba(255,255,255,.05)', borderRadius: '50px', padding: '4px' }}>
             <button onClick={() => setIsLogin(true)} style={{ flex: 1, padding: '10px', borderRadius: '50px', background: isLogin ? 'var(--accent)' : 'transparent', color: isLogin ? '#fff' : 'var(--gray-400)', fontWeight: 700 }}>تسجيل الدخول</button>
@@ -67,7 +67,7 @@ export default function AuthPage() {
           </div>
         </div>
 
-        {/* ── Dark Side Info (Desktop Only) ── */}
+      
         <div style={{ background: 'linear-gradient(145deg, var(--navy-600) 0%, var(--navy-800) 100%)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '48px 40px', textAlign: 'center', position: 'relative' }} className="d-none-mobile">
           <div style={{ position: 'absolute', top: '-60px', left: '50%', transform: 'translateX(-50%)', width: '300px', height: '300px', background: 'radial-gradient(var(--accent-glow),transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
           
@@ -90,7 +90,7 @@ export default function AuthPage() {
           </AnimatePresence>
         </div>
 
-        {/* ── Form Side ── */}
+       
         <div style={{ background: 'var(--white)', padding: '48px 44px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           <AnimatePresence mode="wait">
             {isLogin ? (

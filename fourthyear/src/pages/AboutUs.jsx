@@ -61,15 +61,14 @@ const AboutUs = () => {
         <div className="team-grid">
           {teamMembersData.map((member) => (
             <div key={member.id} className="member-card">
-              
-              {/* الطبقة 1: المحتوى الأساسي (يختفي عند الهوفر) */}
+            \
               <div className="card-front">
                 <div className="member-avatar">{member.icon}</div>
                 <h3 className="member-name">{member.name}</h3>
                 <p className="member-role">{member.role}</p>
               </div>
 
-              {/* الطبقة 2: المعلومات الإضافية (تظهر عند الهوفر) */}
+           
               <div className="card-back">
                 <h4 className="info-title">أبرز المهام</h4>
                 <p className="member-info">{member.info}</p>
