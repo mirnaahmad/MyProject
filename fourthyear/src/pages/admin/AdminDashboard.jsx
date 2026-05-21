@@ -212,7 +212,6 @@ export default function AdminDashboard() {
                 ))}
               </div>
             </div>
-
             <div className="column-side">
               <h3 className="column-title">معدلات الإقبال والتسجيل</h3>
               <div className="progress-bars-list">
