@@ -237,26 +237,60 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="main-card">
+        <div
+          className="main-card"
+          style={{ display: "flex", flexDirection: "column", height: "100%" }}
+        >
           <div className="card-header-with-icon">
             <div className="card-title-flex">
               <span className="title-icon">
                 <Activity size={18} />
               </span>
-              <h2>آخر النشاطات العامة الحية</h2>
+              <h2>سجل الأنشطة والعمليات الحالية</h2>
             </div>
           </div>
 
-          <div className="timeline-container">
+          <div
+            className="timeline-container"
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              gap: "10px",
+            }}
+          >
             {ACTIVITY_FEED.map((activity) => (
-              <div key={activity.id} className="timeline-item">
+              <div
+                key={activity.id}
+                className="timeline-item"
+                style={{ marginBottom: "0px" }}
+              >
                 <div className="timeline-badge-zone">
                   <div className={`timeline-dot dot-${activity.type}`} />
                   <div className="timeline-connect-line" />
                 </div>
-                <div className="timeline-content-box">
-                  <p className="timeline-text">{activity.text}</p>
-                  <span className="timeline-time">{activity.time}</span>
+
+                <div
+                  className="timeline-content-box"
+                  style={{ padding: "12px", width: "100%" }}
+                >
+                  <p
+                    className="timeline-text"
+                    style={{ fontSize: "13.5px", lineHeight: "1.4", margin: 0 }}
+                  >
+                    {activity.text}
+                  </p>
+                  <span
+                    className="timeline-time"
+                    style={{
+                      fontSize: "11px",
+                      display: "block",
+                      marginTop: "4px",
+                    }}
+                  >
+                    {activity.time}
+                  </span>
                 </div>
               </div>
             ))}
@@ -269,64 +303,58 @@ export default function AdminDashboard() {
               <span className="title-icon" style={{ color: "var(--info)" }}>
                 <Users size={18} />
               </span>
-              <h2>تصنيف الفئات المستفيدة برمجياً</h2>
+              <h2>نسبة تفاعل الطلاب حسب السنوات الدراسية</h2>
             </div>
           </div>
 
           <div className="geo-distribution-list">
-            <div className="geo-item">
-              <div className="geo-meta">
-                <div className="geo-identity">
-                  <span>طلاب جامعات تقنية</span>
-                  <small className="geo-count-badge">
-                    {(STATS.beneficiaries * 0.55).toFixed(0)} طالب
-                  </small>
+            {[
+              {
+                label: "السنة الأولى",
+                percentage: 15,
+                color: "var(--warning)",
+              },
+              { label: "السنة الثانية", percentage: 20, color: "var(--info)" },
+              {
+                label: "السنة الثالثة",
+                percentage: 25,
+                color: "var(--accent)",
+              },
+              {
+                label: "السنة الرابعة",
+                percentage: 22,
+                color: "var(--success)",
+              },
+              {
+                label: "السنة الخامسة",
+                percentage: 18,
+                color: "var(--purple, #a855f7)",
+              },
+            ].map((year, index) => (
+              <div className="geo-item" key={index}>
+                <div className="geo-meta">
+                  <div className="geo-identity">
+                    <span>{year.label}</span>
+                    <small className="geo-count-badge">
+                      {((STATS.beneficiaries * year.percentage) / 100).toFixed(
+                        0,
+                      )}{" "}
+                      طالب
+                    </small>
+                  </div>
+                  <strong>{year.percentage}%</strong>
                 </div>
-                <strong>55%</strong>
-              </div>
-              <div className="geo-bar-bg">
-                <div
-                  className="geo-bar-fill"
-                  style={{ width: "55%", backgroundColor: "var(--accent)" }}
-                />
-              </div>
-            </div>
-
-            <div className="geo-item">
-              <div className="geo-meta">
-                <div className="geo-identity">
-                  <span>خريجون جدد (باحثون عن عمل)</span>
-                  <small className="geo-count-badge">
-                    {(STATS.beneficiaries * 0.3).toFixed(0)} خريج
-                  </small>
+                <div className="geo-bar-bg">
+                  <div
+                    className="geo-bar-fill"
+                    style={{
+                      width: `${year.percentage}%`,
+                      backgroundColor: year.color,
+                    }}
+                  />
                 </div>
-                <strong>30%</strong>
               </div>
-              <div className="geo-bar-bg">
-                <div
-                  className="geo-bar-fill"
-                  style={{ width: "30%", backgroundColor: "var(--info)" }}
-                />
-              </div>
-            </div>
-
-            <div className="geo-item">
-              <div className="geo-meta">
-                <div className="geo-identity">
-                  <span>مطورون ممارسون (Upskilling)</span>
-                  <small className="geo-count-badge">
-                    {(STATS.beneficiaries * 0.15).toFixed(0)} مطوّر
-                  </small>
-                </div>
-                <strong>15%</strong>
-              </div>
-              <div className="geo-bar-bg">
-                <div
-                  className="geo-bar-fill"
-                  style={{ width: "15%", backgroundColor: "var(--success)" }}
-                />
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
