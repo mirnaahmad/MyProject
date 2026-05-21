@@ -10,9 +10,7 @@ export const EVENTS = [
     date: "27 أكتوبر 2026",
     time: "10:00 AM",
     duration: "3 ساعات",
-    category: "تطوير مهني",
     location: "أونلاين / Zoom",
-    eventLink: "",
     attendees: 120,
     status: "upcoming",
     featured: true,
@@ -27,7 +25,6 @@ export const EVENTS = [
       "أسرار العمل الحر وكيفية الحصول على أول عميل",
       "المهارات الناعمة التي يبحث عنها أصحاب العمل",
     ],
-    price: "مجاني",
   },
   {
     id: 2,
@@ -39,8 +36,6 @@ export const EVENTS = [
     date: "27 أكتوبر 2026",
     time: "7:00 AM",
     duration: "3 ساعات",
-    eventLink: "",
-    category: "تطوير ويب",
     location: "كلية الهندسة",
     attendees: 60,
     status: "upcoming",
@@ -56,7 +51,6 @@ export const EVENTS = [
       "Authentication",
       "Deployment",
     ],
-    price: "500 ل.س",
   },
   {
     id: 3,
@@ -68,8 +62,6 @@ export const EVENTS = [
     date: "15 نوفمبر 2026",
     time: "11:00 AM",
     duration: "2 ساعة",
-    eventLink: "",
-    category: "تطوير مهاري",
     location: "قاعة D2",
     attendees: 80,
     status: "upcoming",
@@ -83,7 +75,6 @@ export const EVENTS = [
       "تمارين جماعية",
       "تقييم مستوى اللغة",
     ],
-    price: "مجاني",
   },
   {
     id: 4,
@@ -95,8 +86,6 @@ export const EVENTS = [
     date: "20 نوفمبر 2026",
     time: "9:00 AM",
     duration: "4 ساعات",
-    eventLink: "",
-    category: "نشاط جماعي",
     location: "مدرج الكلية الكبير",
     attendees: 200,
     status: "upcoming",
@@ -105,7 +94,6 @@ export const EVENTS = [
     description:
       "يوم كامل من التدريبات والورشات المتنوعة لرفع مستوى طلاب الكلية.",
     agenda: ["ورشة تصميم UX", "ورشة Python", "مسابقة برمجية", "حفل ختامي"],
-    price: "مجاني",
   },
 ];
 
@@ -115,42 +103,36 @@ export const ARCHIVE_EVENTS = [
     title: "Up and Running with Laravel — النسخة الأولى",
     date: "أكتوبر 2025",
     img: "https://images.unsplash.com/photo-1541178735493-479c1a27ed24?w=400&q=70",
-    category: "تطوير ويب",
   },
   {
     id: 6,
     title: "Technical Conversational Training #1",
     date: "سبتمبر 2025",
     img: "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=400&q=70",
-    category: "تطوير مهاري",
   },
   {
     id: 7,
     title: "أفضل ممارسة سيبرانية",
     date: "أغسطس 2025",
     img: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=400&q=70",
-    category: "أمن معلومات",
   },
   {
     id: 8,
     title: "متطلبات سوق العمل — النسخة الأولى",
     date: "يوليو 2025",
     img: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400&q=70",
-    category: "تطوير مهني",
   },
   {
     id: 9,
     title: "SKILL UP GA أول نسخة",
     date: "يونيو 2025",
     img: "https://images.unsplash.com/photo-1562408590-e32931084e23?w=400&q=70",
-    category: "نشاط جماعي",
   },
   {
     id: 10,
     title: "Cybersecurity Workshop",
     date: "مايو 2025",
     img: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&q=70",
-    category: "أمن معلومات",
   },
 ];
 
@@ -229,6 +211,8 @@ export const USERS = [
   },
 ];
 
+// mockData.js
+
 export const STATS = {
   members: 105,
   beneficiaries: 5200,
@@ -252,14 +236,40 @@ export const CHART_DATA = {
     { month: "نوفمبر", count: 140 },
     { month: "ديسمبر", count: 120 },
   ],
-  categories: [
-    { name: "تطوير ويب", value: 35, color: "#4a90e2" },
-    { name: "تطوير مهني", value: 28, color: "#5b9bd5" },
-    { name: "أمن معلومات", value: 18, color: "#2979d4" },
-    { name: "تطوير مهاري", value: 12, color: "#88bde8" },
-    { name: "نشاط جماعي", value: 7, color: "#142d55" },
+  // 📊 أضفنا توزيع حالات الفعاليات هنا لترسم الدائرة بشكل منطقي وأنيق ومتوازن
+  eventStatus: [
+    { name: "فعاليات قادمة", value: 45, color: "var(--warning)" },
+    { name: "فعاليات مكتملة", value: 55, color: "var(--success)" },
   ],
 };
+
+// 📋 أضفنا بيانات الفعاليات الحقيقية المأخوذة من صورتك مباشرة هنا لتُعرض بالجدول
+export const LATEST_EVENTS = [
+  {
+    id: 1,
+    title: "متطلبات سوق العمل من المبرمجين",
+    date: "27 أكتوبر 2026",
+    registered: 120,
+    status: "upcoming",
+    statusText: "قادمة",
+  },
+  {
+    id: 2,
+    title: "Up and Running with Laravel",
+    date: "27 أكتوبر 2026",
+    registered: 60,
+    status: "upcoming",
+    statusText: "قادمة",
+  },
+  {
+    id: 3,
+    title: "SKILL UP GA — أول نسخة",
+    date: "يونيو 2025",
+    registered: 200,
+    status: "completed",
+    statusText: "مكتملة",
+  },
+];
 
 export const ACTIVITY_FEED = [
   {

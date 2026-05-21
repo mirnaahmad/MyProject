@@ -12,6 +12,7 @@ import {
   Tag,
   Contact,
 } from "lucide-react";
+// ايقونات
 import NetworkCanvas from "../components/NetworkCanvas";
 import { EVENTS } from "../data/mockData";
 import { useState, useEffect } from "react";
