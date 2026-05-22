@@ -1,14 +1,14 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
-import { AnimatePresence } from 'framer-motion'
-import Navbar from './components/Navbar'
-import Footer from './components/Footer'
-import HomePage from './pages/HomePage'
-import EventsPage from './pages/EventsPage'
-import AboutUs from './pages/AboutUs'
-import EventDetailPage from './pages/EventDetailPage'
-import AuthPage from './pages/AuthPage'
+import { Routes, Route, Navigate } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import HomePage from "./pages/HomePage";
+import EventsPage from "./pages/EventsPage";
+import AboutUs from "./pages/AboutUs";
+import EventDetailPage from "./pages/EventDetailPage";
+import AuthPage from "./pages/AuthPage";
+import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 // import AdminLayout from './pages/admin/AdminLayout'
-// import AdminDashboard from './pages/admin/AdminDashboard'
 // import AdminEvents from './pages/admin/AdminEvents'
 // import AdminUsers from './pages/admin/AdminUsers'
 // import AdminStats from './pages/admin/AdminStats'
@@ -19,18 +19,47 @@ const PublicLayout = ({ children }) => (
     <main>{children}</main>
     <Footer />
   </>
-)
+);
 
 export default function App() {
   return (
     <AnimatePresence mode="wait">
       <Routes>
         {/* Public */}
-        <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />
-        <Route path="/events" element={<PublicLayout><EventsPage /></PublicLayout>} />
-        <Route path="/events/:id" element={<PublicLayout><EventDetailPage /></PublicLayout>} />
+        <Route
+          path="/"
+          element={
+            <PublicLayout>
+              <HomePage />
+            </PublicLayout>
+          }
+        />
+        <Route
+          path="/events"
+          element={
+            <PublicLayout>
+              <EventsPage />
+            </PublicLayout>
+          }
+        />
+        <Route
+          path="/events/:id"
+          element={
+            <PublicLayout>
+              <EventDetailPage />
+            </PublicLayout>
+          }
+        />
         <Route path="/auth" element={<AuthPage />} />
-        <Route path="/AboutUs" element={<PublicLayout><AboutUs/></PublicLayout>}/>
+        <Route
+          path="/AboutUs"
+          element={
+            <PublicLayout>
+              <AboutUs />
+            </PublicLayout>
+          }
+        />
+        <Route path="/admin" element={<AdminDashboard />} />
         {/* Admin */}
         {/* <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Navigate to="/admin/dashboard" replace />} />
@@ -44,5 +73,5 @@ export default function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AnimatePresence>
-  )
+  );
 }

@@ -33,6 +33,7 @@ export default function RegistrationModal({
   useEffect(() => {
     let timer;
     if (isSuccess) {
+      // إعداد العداد
       const timeoutId = setTimeout(() => {
         setCountdown(TOTAL_DURATION);
         setPreventForm(true);
@@ -52,6 +53,7 @@ export default function RegistrationModal({
           return prev - 1;
         });
       }, 1000);
+      // تقوم بتكرار الكود كل ثانية
       return () => {
         clearTimeout(timeoutId);
         clearInterval(timer);

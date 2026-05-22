@@ -23,7 +23,6 @@ export default function EventsPage() {
   const [registeredEvents, setRegisteredEvents] = useState(() => {
     const saved = localStorage.getItem("registeredEvents");
     return saved ? JSON.parse(saved) : [];
-    // اذا في بيانات جيبها واذا لا ابدا  بمصفوفة فاضية
   });
   const [inputsData, setInputsData] = useState({
     name: "",
@@ -35,7 +34,7 @@ export default function EventsPage() {
   useEffect(() => {
     localStorage.setItem("registeredEvents", JSON.stringify(registeredEvents));
   }, [registeredEvents]);
-  // حفظ البيانات لاسترجاعها من الذاكرة المحلية مشان ما تضيع لما نعمل ريفريش للصفحة
+  
   return (
     <>
       {/* ── HERO ── */}
