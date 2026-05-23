@@ -61,7 +61,7 @@ const AboutUs = () => {
         <div className="team-grid">
           {teamMembersData.map((member) => (
             <div key={member.id} className="member-card">
-            \
+            
               <div className="card-front">
                 <div className="member-avatar">{member.icon}</div>
                 <h3 className="member-name">{member.name}</h3>

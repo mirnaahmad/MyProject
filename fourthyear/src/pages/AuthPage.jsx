@@ -108,9 +108,7 @@ export default function AuthPage() {
                       {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                   </div>
-                  <div style={{ textAlign: 'left', marginBottom: '16px', marginTop: '-4px' }}>
-                    <a href="#" style={{ fontSize: '.8rem', color: 'var(--accent)' }}>نسيت كلمة المرور؟</a>
-                  </div>
+                  
                   <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '14px', marginTop: '6px' }}>تسجيل الدخول</button>
                 </form>
               </motion.div>
@@ -119,15 +117,21 @@ export default function AuthPage() {
                 <h2 style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--navy-800)', marginBottom: '30px', direction: 'ltr', textAlign: 'left' }}>إنشاء حساب</h2>
                 <form onSubmit={handleSubmit}>
                   <div className="form-group">
-                    <input type="text" className="form-input form-input-light" placeholder="الاسم الكامل" required />
+                      <input type="text" className="form-input form-input-light" placeholder="الاسم الكامل" required
+                      pattern="^[a-zA-Z\u0600-\u06FF\s]{3,30}$"
+                        title="الاسم الكامل يجب أن يحتوي على حروف فقط وبطول يتراوح بين 3 و20 حرفاً."/>
                     <User size={18} className="form-icon" />
                   </div>
                   <div className="form-group">
-                    <input type="email" className="form-input form-input-light" placeholder="البريد الإلكتروني" required />
+                      <input type="email" className="form-input form-input-light" placeholder="البريد الإلكتروني" required
+                        pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                         title="يرجى إدخال بريد إلكتروني صالح (مثال: name@example.com)"/>
                     <Mail size={18} className="form-icon" />
                   </div>
                   <div className="form-group">
-                    <input type={showPass ? 'text' : 'password'} className="form-input form-input-light" placeholder="كلمة المرور" required />
+                      <input type={showPass ? 'text' : 'password'} className="form-input form-input-light" placeholder="كلمة المرور" required
+                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
+                        title="يجب أن تتكون كلمة المرور من 8 خانات على الأقل، وتحتوي على حرف كبير، حرف صغير، ورقم."  />
                     <Lock size={18} className="form-icon" />
                     <button type="button" onClick={() => setShowPass(!showPass)} style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: '300px', background: 'none', color: showPass ? 'var(--accent)' : 'var(--gray-400)' }}>
                       {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
