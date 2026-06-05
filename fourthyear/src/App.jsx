@@ -8,10 +8,8 @@ import AboutUs from "./pages/AboutUs";
 import EventDetailPage from "./pages/EventDetailPage";
 import AuthPage from "./pages/AuthPage";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
-// import AdminLayout from './pages/admin/AdminLayout'
-// import AdminEvents from './pages/admin/AdminEvents'
-// import AdminUsers from './pages/admin/AdminUsers'
-// import AdminStats from './pages/admin/AdminStats'
+import AdminLayout from "./pages/admin/AdminLayout";
+import AdminEvents from "./pages/admin/AdminEvents";
 
 const PublicLayout = ({ children }) => (
   <>
@@ -59,15 +57,11 @@ export default function App() {
             </PublicLayout>
           }
         />
-        <Route path="/admin" element={<AdminDashboard />} />
-        {/* Admin */}
-        {/* <Route path="/admin" element={<AdminLayout />}>
+        <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Navigate to="/admin/dashboard" replace />} />
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="events" element={<AdminEvents />} />
-          <Route path="users" element={<AdminUsers />} />
-          <Route path="stats" element={<AdminStats />} />
-        </Route> */}
+        </Route>
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
