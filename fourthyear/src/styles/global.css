@@ -298,7 +298,7 @@ select {
 .form-label { display:block; font-size:.82rem; font-weight:600; color:var(--gray-300); margin-bottom:6px; }
 .form-input {
   width: 100%;
-  background: var(--navy-700);
+  background: transparent;
   border: 1.5px solid rgba(91, 155, 213, 0.2);
   border-radius: var(--radius-sm);
   padding: 11px 42px 11px 14px;
@@ -310,7 +310,7 @@ select {
 .form-input:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-glow);color: var(--navy-700); }
 .form-input::placeholder { color:var(--gray-600); }
 .form-input-light {
-  background:var(--gray-100); border:1.5px solid var(--gray-200);
+  background:var(--gray-100) !important; border:1.5px solid var(--gray-200);
   color:var(--navy-800); direction:ltr; text-align:left;
 }
 .form-input-light:focus { border-color:var(--accent); background:var(--white); }
