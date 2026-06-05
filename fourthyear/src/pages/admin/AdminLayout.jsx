@@ -15,7 +15,7 @@ export default function AdminLayout() {
                 `nav-tab-item ${isActive ? "active" : ""}`
               }
             >
-              📊 الرئيسية والإحصائيات
+              الرئيسية والإحصائيات
             </NavLink>
 
             <NavLink
@@ -24,7 +24,7 @@ export default function AdminLayout() {
                 `nav-tab-item ${isActive ? "active" : ""}`
               }
             >
-              📅 إدارة الفعاليات
+              إدارة الفعاليات
             </NavLink>
           </nav>
         </div>
