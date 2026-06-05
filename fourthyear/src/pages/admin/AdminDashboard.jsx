@@ -30,7 +30,6 @@ import {
 } from "../../data/mockData";
 
 export default function AdminDashboard() {
-  // نقوم باستدعاء المتغيرات مباشرة باستخدام وظيفة getComputedStyle أو كتابتها كـ استايل مدمج
   const PIE_COLORS = ["var(--accent)", "var(--info)"];
 
   return (
