@@ -307,7 +307,7 @@ select {
   font-family: var(--font);
   transition: var(--transition);
 }
-.form-input:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-glow); }
+.form-input:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-glow);color: var(--navy-700); }
 .form-input::placeholder { color:var(--gray-600); }
 .form-input-light {
   background:var(--gray-100); border:1.5px solid var(--gray-200);
