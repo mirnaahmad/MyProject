@@ -236,6 +236,7 @@ export default function ManageEvents() {
                         value={formData.title}
                         onChange={handleInputChange}
                         required
+                        minLength="5"
                         placeholder="مثال: متطلبات سوق العمل من المبرمجين"
                       />
                     </div>
@@ -254,7 +255,7 @@ export default function ManageEvents() {
                       <div className="form-group">
                         <label>التاريخ</label>
                         <input
-                          type="text"
+                          type="date"
                           name="date"
                           value={formData.date}
                           onChange={handleInputChange}
@@ -265,7 +266,7 @@ export default function ManageEvents() {
                       <div className="form-group">
                         <label>وقت البدء</label>
                         <input
-                          type="text"
+                          type="time"
                           name="time"
                           value={formData.time}
                           onChange={handleInputChange}
@@ -280,6 +281,7 @@ export default function ManageEvents() {
                         <input
                           type="text"
                           name="duration"
+                          pattern="[0-9]+"
                           value={formData.duration}
                           onChange={handleInputChange}
                           required
@@ -303,10 +305,11 @@ export default function ManageEvents() {
                         <label>العدد المستهدف للحضور</label>
                         <input
                           type="number"
+                          min={1}
                           name="attendees"
                           value={formData.attendees}
                           onChange={handleInputChange}
-                          placeholder="مثال: 120"
+                          placeholder="120"
                         />
                       </div>
                       <div className="form-group">
