@@ -1,4 +1,4 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Calendar,
@@ -14,33 +14,127 @@ import {
 } from "lucide-react";
 // ايقونات
 import NetworkCanvas from "../components/NetworkCanvas";
-import { EVENTS } from "../data/mockData";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import RegistrationModal from "../components/RegistrationModal";
+import api from "../api";
+import Notification from "../components/Notification";
 import "../styles/Event.css";
 
 export default function EventDetailPage() {
   const { id } = useParams();
-  const event = EVENTS.find((e) => e.id === parseInt(id)) || EVENTS[0];
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [registeredEvents, setRegisteredEvents] = useState(() => {
-    const saved = localStorage.getItem("registeredEvents");
-    return saved ? JSON.parse(saved) : [];
-  });
-  const [inputsData, setInputsData] = useState({
-    name: "",
-    email: "",
-    contact: "",
-  });
+  const [event, setEvent] = useState(null);
+  const [status, setStatus] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [notification, setNotification] = useState(null);
+  const [relatedEvents, setRelatedEvents] = useState([]);
+
+  const fetchData = useCallback(async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+    console.log("الـ ID الذي نحاول استخدامه هو:", id);
+    if (!id) {
+      console.error("خطأ: لا يوجد ID للفعالية!");
+      return;
+    }
+    try {
+      setLoading(true);
+      const [resEvent, resActive] = await Promise.all([
+        api.get(`/events/${id}`),
+        api.get(`/events/active`),
+      ]);
+      const eventData = resEvent.data.event || resEvent.data;
+      setEvent(eventData);
+      setRelatedEvents(
+        resActive.data.filter((e) => e.id !== Number(id)).slice(0, 2),
+      );
+      try {
+        const resStatus = await api.get(`/events/status/${id}`);
+        setStatus({ [id]: resStatus.data });
+      } catch (statusErr) {
+        console.warn(
+          "فشل طلب الـ status، السيرفر لا يجد الـ ID أو هناك خلل في الباك:",
+          statusErr.response?.data || statusErr,
+        );
+      }
+      setLoading(false);
+    } catch (err) {
+      console.error("خطأ:", err);
+      if (err.response?.status === 401) {
+        navigate("/login");
+      }
+      setLoading(false);
+    }
+  }, [id, navigate]);
+
   useEffect(() => {
-    localStorage.setItem("registeredEvents", JSON.stringify(registeredEvents));
-  }, [registeredEvents]);
+    let isMounted = true;
+    const loadData = async () => {
+      await fetchData();
+    };
 
-  const related = EVENTS.filter((e) => e.id !== event.id).slice(0, 2);
-
+    if (isMounted) {
+      loadData();
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [fetchData]);
+  if (loading)
+    return (
+      <div
+        className="container"
+        style={{ padding: "50px", textAlign: "center" }}
+      >
+        جاري تحميل التفاصيل...
+      </div>
+    );
+  if (!event)
+    return (
+      <div
+        className="container"
+        style={{ padding: "50px", textAlign: "center" }}
+      >
+        الفعالية غير موجودة أو حدث خطأ.
+      </div>
+    );
+  const handleRegisterClick = () => {
+    if (!localStorage.getItem("token")) {
+      navigate("/auth");
+      return;
+    }
+    setIsOpen(true);
+  };
+  const handleCancelRegistration = async (eventId) => {
+    console.log("ID المبعوث هو:", eventId);
+    try {
+      await api.post("/events/cancel", { event_id: eventId });
+      await fetchData();
+      setNotification({
+        message: "تم إلغاء التسجيل بنجاح",
+        type: "success",
+      });
+    } catch (err) {
+      console.error("خطأ في إلغاء التسجيل:", err);
+      setNotification({
+        message: "خطأ في إلغاء التسجيل ",
+        type: "error",
+      });
+    }
+  };
   return (
     <>
+      {notification && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={() => setNotification(null)}
+        />
+      )}
       <section className="page-hero" style={{ minHeight: "300px" }}>
         <NetworkCanvas />
         <div className="container page-hero-content">
@@ -127,23 +221,24 @@ export default function EventDetailPage() {
                     color: "var(--text-light)",
                   }}
                 >
-                  {event.agenda.map((item, i) => (
-                    <li
-                      key={i}
-                      style={{
-                        display: "flex",
-                        gap: "10px",
-                        alignItems: "flex-start",
-                      }}
-                    >
-                      <span
-                        style={{ color: "var(--accent)", marginTop: "6px" }}
+                  {Array.isArray(event.agenda) &&
+                    event.agenda.map((item, i) => (
+                      <li
+                        key={i}
+                        style={{
+                          display: "flex",
+                          gap: "10px",
+                          alignItems: "flex-start",
+                        }}
                       >
-                        •
-                      </span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
+                        <span
+                          style={{ color: "var(--accent)", marginTop: "6px" }}
+                        >
+                          •
+                        </span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
                 </ul>
               </div>
 
@@ -165,7 +260,7 @@ export default function EventDetailPage() {
                     gap: "20px",
                   }}
                 >
-                  {related.map((rel) => (
+                  {relatedEvents.map((rel) => (
                     <Link
                       to={`/events/${rel.id}`}
                       key={rel.id}
@@ -177,7 +272,7 @@ export default function EventDetailPage() {
                         style={{ height: "140px" }}
                       >
                         <img
-                          src={rel.img}
+                          src={`http://localhost:4000${rel.img}`}
                           alt={rel.title}
                           className="event-card-img"
                         />
@@ -216,7 +311,7 @@ export default function EventDetailPage() {
             >
               <div className="card" style={{ padding: "28px" }}>
                 <img
-                  src={event.speakerImg}
+                  src={`http://localhost:4000${event.speakerImg}`}
                   alt={event.speaker}
                   style={{
                     width: "300px",
@@ -278,6 +373,9 @@ export default function EventDetailPage() {
                 </div>
                 <button
                   className="btn btn-primary"
+                  disabled={
+                    status[event.id]?.isFull && !status[event.id]?.isRegistered
+                  }
                   style={{
                     width: "100%",
                     marginTop: "24px",
@@ -285,11 +383,18 @@ export default function EventDetailPage() {
                     cursor: "pointer",
                   }}
                   onClick={() => {
-                    setIsSuccess(registeredEvents.includes(event.id));
-                    setIsOpen(true);
+                    if (status[event.id]?.isRegistered) {
+                      handleCancelRegistration(event.id);
+                    } else {
+                      handleRegisterClick(event);
+                    }
                   }}
                 >
-                  <Ticket size={18} /> احجز مقعدك الآن
+                  {status[event.id]?.isRegistered
+                    ? " انسحاب"
+                    : status[event.id]?.isFull
+                      ? "ممتلئة"
+                      : "احجز"}
                 </button>
                 <Link
                   to="/events"
@@ -312,13 +417,12 @@ export default function EventDetailPage() {
       {isOpen && (
         <RegistrationModal
           setIsOpen={setIsOpen}
-          isSuccess={isSuccess}
-          setIsSuccess={setIsSuccess}
-          inputsData={inputsData}
-          setInputsData={setInputsData}
+          onSuccess={() => {
+            setIsOpen(false);
+            fetchData();
+          }}
           selectedEventTitle={event.title}
           eventId={event.id}
-          setRegisteredEvents={setRegisteredEvents}
         />
       )}
     </>

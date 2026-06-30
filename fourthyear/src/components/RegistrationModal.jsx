@@ -3,31 +3,59 @@ import { Check, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import logo from "../assets/logo.png";
 import "../styles/Event.css";
+import api from "../api";
+import Notification from "../components/Notification";
+import { useNavigate } from "react-router-dom";
 
 export default function RegistrationModal({
   setIsOpen,
-  isSuccess,
-  setIsSuccess,
-  inputsData,
-  setInputsData,
   selectedEventTitle,
-  setRegisteredEvents,
   eventId,
+  onSuccess,
 }) {
   const [countdown, setCountdown] = useState(3);
+  const [notification, setNotification] = useState(null);
   const [preventForm, setPreventForm] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const TOTAL_DURATION = 3;
-  const handleSubmit = (e) => {
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [inputsData, setInputsData] = useState({
+    full_name: "",
+    notes: "",
+    phone_number: "",
+  });
+  const navigate = useNavigate();
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (inputsData.name && inputsData.email && inputsData.contact) {
-      setRegisteredEvents((prev) => [...prev, eventId]);
-      setPreventForm(true);
-      setIsSuccess(true);
-      setInputsData({
-        name: "",
-        email: "",
-        contact: "",
+    setIsLoading(true);
+
+    try {
+      await api.post("/events/register", {
+        event_id: eventId,
+        ...inputsData,
       });
+
+      setIsSuccess(true);
+    } catch (e) {
+      console.error("خطأ في التسجيل", e);
+      if (e.response?.status === 401) {
+        setNotification({
+          message: "عذراً، يجب تسجيل الدخول أولاً للتسجيل في الفعالية",
+          type: "error",
+        });
+
+        setTimeout(() => {
+          navigate("/auth");
+        }, 2000);
+        return;
+      }
+      setNotification({
+        message:
+          e.response?.data?.message || "حدث خطأ أثناء التسجيل، حاول مجدداً",
+        type: "error",
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
   useEffect(() => {
@@ -47,7 +75,10 @@ export default function RegistrationModal({
             setTimeout(() => {
               setIsOpen(false);
               setPreventForm(false);
-            }, 400);
+            }, 500);
+            if (onSuccess) {
+              onSuccess();
+            }
             return 0;
           }
           return prev - 1;
@@ -59,13 +90,20 @@ export default function RegistrationModal({
         clearInterval(timer);
       };
     }
-  }, [isSuccess, setIsOpen, setIsSuccess]);
+  }, [isSuccess, setIsOpen, onSuccess]);
   const progressPercentage = (countdown / TOTAL_DURATION) * 100;
   return (
     <div
       className="mainCon"
       style={{ pointerEvents: isSuccess ? "none" : "all" }}
     >
+      {notification && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={() => setNotification(null)}
+        />
+      )}
       <AnimatePresence mode="wait">
         {isSuccess && (
           <motion.div
@@ -190,6 +228,7 @@ export default function RegistrationModal({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
+            disabled={isLoading}
             onClick={() => {
               setIsOpen(false);
               setIsSuccess(false);
@@ -201,8 +240,9 @@ export default function RegistrationModal({
               left: "15px",
               border: "none",
               color: "#bbd4ebff",
-              cursor: "pointer",
+              cursor: isLoading ? "not-allowed" : "pointer",
               zIndex: 10,
+              opacity: isLoading ? 0.5 : 1,
             }}
           >
             <X size={15} strokeWidth={3} />
@@ -227,24 +267,31 @@ export default function RegistrationModal({
                   type="text"
                   placeholder="الاسم"
                   minLength={3}
-                  value={inputsData.name}
+                  value={inputsData.full_name}
                   onChange={(e) => {
-                    setInputsData({ ...inputsData, name: e.target.value });
+                    setInputsData({ ...inputsData, full_name: e.target.value });
                   }}
                   required
                 />
               </div>
               <div className="fieldGroup">
-                <label className="fieldLabel">الايميل:</label>
-                <input
+                <label className="fieldLabel">
+                  ما سبب اهتمامك بهذه الفعالية؟
+                </label>
+                <textarea
                   className="inputs"
-                  type="email"
-                  placeholder="name@example.com"
-                  value={inputsData.email}
-                  onChange={(e) => {
-                    setInputsData({ ...inputsData, email: e.target.value });
+                  rows="2"
+                  maxLength="100"
+                  placeholder="شاركونا شغفكم وأسباب تسجيلكم..."
+                  value={inputsData.notes}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                    }
                   }}
-                  required
+                  onChange={(e) => {
+                    setInputsData({ ...inputsData, notes: e.target.value });
+                  }}
                 />
               </div>
               <div className="fieldGroup">
@@ -255,19 +302,34 @@ export default function RegistrationModal({
                   placeholder="09xxxxxxxx"
                   pattern="[0-9]{10}"
                   title="يجب إدخال رقم هاتف صالح "
-                  value={inputsData.contact}
+                  value={inputsData.phone_number}
                   onChange={(e) => {
-                    setInputsData({ ...inputsData, contact: e.target.value });
+                    setInputsData({
+                      ...inputsData,
+                      phone_number: e.target.value,
+                    });
                   }}
                   required
                 />
               </div>
 
-              <button className="check" type="submit">
-                <Check
-                  size={20}
-                  style={{ color: "#0f63beff", strokeWidth: "4" }}
-                />
+              <button
+                className="check"
+                type="submit"
+                disabled={isLoading}
+                style={{
+                  opacity: isLoading ? 0.6 : 1,
+                  cursor: isLoading ? "not-allowed" : "pointer",
+                }}
+              >
+                {isLoading ? (
+                  <span style={{ fontSize: "12px" }}>جاري...</span>
+                ) : (
+                  <Check
+                    size={20}
+                    style={{ color: "#0f63beff", strokeWidth: "4" }}
+                  />
+                )}
               </button>
             </motion.form>
             <motion.div
@@ -292,7 +354,7 @@ export default function RegistrationModal({
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
-                  textALign: "center",
+                  textAlign: "center",
                   gap: "5px",
                 }}
               >

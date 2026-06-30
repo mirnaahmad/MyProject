@@ -18,7 +18,18 @@ const PublicLayout = ({ children }) => (
     <Footer />
   </>
 );
+const ProtectedRoute = ({ children, allowedRoles }) => {
+  const token = localStorage.getItem("token");
+  const userRole = localStorage.getItem("role");
+  if (!token) {
+    return <Navigate to="/auth" />;
+  }
+  if (allowedRoles && !allowedRoles.includes(userRole)) {
+    return <Navigate to="/" />; // إرجاعه للصفحة الرئيسية
+  }
 
+  return children;
+};
 export default function App() {
   return (
     <AnimatePresence mode="wait">
@@ -44,7 +55,9 @@ export default function App() {
           path="/events/:id"
           element={
             <PublicLayout>
-              <EventDetailPage />
+              <ProtectedRoute>
+                <EventDetailPage />
+              </ProtectedRoute>
             </PublicLayout>
           }
         />
@@ -57,7 +70,14 @@ export default function App() {
             </PublicLayout>
           }
         />
-        <Route path="/admin" element={<AdminLayout />}>
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<Navigate to="/admin/dashboard" replace />} />
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="events" element={<AdminEvents />} />
