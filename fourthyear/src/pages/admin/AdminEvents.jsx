@@ -1,22 +1,22 @@
-import React, { useState } from "react";
-import { EVENTS } from "../../data/mockData";
+import React, { useState, useEffect } from "react";
 import "../../styles/AdEvent.css";
+import api from "../../api";
+import Notification from "../../components/Notification";
 
 export default function ManageEvents() {
-  const [eventsList, setEventsList] = useState(EVENTS);
+  const [eventsList, setEventsList] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState("info");
-
+  const [notification, setNotification] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [eventIdToDelete, setEventIdToDelete] = useState(null);
 
   const initialFormState = {
-    id: null,
     title: "",
     speaker: "",
     speakerTitle: "",
-    speakerImg: null,
+    speakerImg: "",
     date: "",
     time: "",
     duration: "",
@@ -24,7 +24,7 @@ export default function ManageEvents() {
     attendees: "",
     status: "upcoming",
     featured: false,
-    img: null,
+    img: "",
     description: "",
     agenda: "",
   };
@@ -40,11 +40,23 @@ export default function ManageEvents() {
 
   const handleEditClick = (event) => {
     setIsEditing(true);
+
+    const poster =
+      event.media && event.media[0] ? event.media[0].mediaUrl : null;
+    const speakerImage =
+      event.media && event.media[1] ? event.media[1].mediaUrl : null;
+
     setFormData({
       ...event,
+
       agenda: event.agenda ? event.agenda.join("\n") : "",
+
+      img: poster ? `http://localhost:4000/${poster}` : null,
+      speakerImg: speakerImage ? `http://localhost:4000/${speakerImage}` : null,
     });
+
     setActiveTab("info");
+
     setShowForm(true);
   };
 
@@ -53,11 +65,19 @@ export default function ManageEvents() {
     setShowDeleteModal(true);
   };
 
-  // تأكيد الحذف النهائي من داخل الصندوق
-  const confirmDelete = () => {
-    setEventsList(eventsList.filter((item) => item.id !== eventIdToDelete));
-    setShowDeleteModal(false);
-    setEventIdToDelete(null);
+  const confirmDelete = async () => {
+    try {
+      await api.delete(`/admin/events/${eventIdToDelete}`);
+      setEventsList((prev) =>
+        prev.filter((item) => item.id !== eventIdToDelete),
+      );
+      setShowDeleteModal(false);
+    } catch (err) {
+      setNotification({
+        message: "حدث خطأ أثناء الحذف",
+        type: "error",
+      });
+    }
   };
 
   const handleInputChange = (e) => {
@@ -65,7 +85,7 @@ export default function ManageEvents() {
     if (type === "file") {
       setFormData((prev) => ({
         ...prev,
-        [name]: files[0] ? URL.createObjectURL(files[0]) : null,
+        [name]: files[0],
       }));
     } else {
       setFormData((prev) => ({
@@ -75,37 +95,81 @@ export default function ManageEvents() {
     }
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    const agendaArray = formData.agenda
-      ? formData.agenda.split("\n").filter((line) => line.trim() !== "")
-      : [];
-    const processedData = {
-      ...formData,
-      attendees: Number(formData.attendees) || 0,
-      agenda: agendaArray,
-      img:
-        formData.img ||
-        "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80",
-      speakerImg:
-        formData.speakerImg ||
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80",
-    };
+    const formDataToSend = new FormData();
+    formDataToSend.append("title", formData.title);
+    formDataToSend.append("speaker", formData.speaker);
+    formDataToSend.append("speakerTitle", formData.speakerTitle);
+    formDataToSend.append("date", formData.date);
+    formDataToSend.append("time", formData.time);
+    formDataToSend.append("duration", formData.duration);
+    formDataToSend.append("location", formData.location);
+    formDataToSend.append("attendees", formData.attendees);
+    formDataToSend.append("status", formData.status);
+    formDataToSend.append("featured", formData.featured ? "1" : "0");
+    formDataToSend.append("description", formData.description);
+    formDataToSend.append(
+      "agenda",
+      JSON.stringify(formData.agenda ? formData.agenda.split("\n") : []),
+    );
 
-    if (isEditing) {
-      setEventsList(
-        eventsList.map((item) =>
-          item.id === formData.id ? { ...item, ...processedData } : item,
-        ),
-      );
-    } else {
-      setEventsList([{ ...processedData, id: Date.now() }, ...eventsList]);
+    if (formData.img instanceof File) {
+      formDataToSend.append("images", formData.img);
     }
-    setShowForm(false);
+
+    if (formData.speakerImg instanceof File) {
+      formDataToSend.append("images", formData.speakerImg);
+    }
+
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      };
+
+      if (isEditing) {
+        await api.put(`/admin/events/${formData.id}`, formDataToSend, config);
+      } else {
+        await api.post("/admin/events", formDataToSend, config);
+      }
+
+      const res = await api.get("/events/active");
+      setEventsList(res.data);
+      setShowForm(false);
+      setNotification({
+        message: "تمت العملية بنجاح",
+        type: "success",
+      });
+    } catch (err) {
+      setNotification({
+        message: "حدث خطأ أثناء حفظ الفعالية: ",
+        type: "error",
+      });
+    }
   };
 
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const res = await api.get("/events/active");
+        setEventsList(res.data);
+      } catch (err) {
+        console.error("خطأ في جلب الفعاليات:", err);
+      }
+    };
+    fetchEvents();
+  }, []);
   return (
     <div className="manage-events-container" dir="rtl">
+      {notification && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={() => setNotification(null)}
+        />
+      )}
       {showDeleteModal && (
         <div className="delete-modal-overlay">
           <div className="delete-modal-box">
@@ -328,6 +392,24 @@ export default function ManageEvents() {
                     <div className="form-group">
                       <label>صورة غلاف الفعالية</label>
                       <div className="file-upload-wrapper">
+                        {formData.img && (
+                          <div style={{ marginBottom: "10px" }}>
+                            <img
+                              src={
+                                formData.img instanceof File
+                                  ? URL.createObjectURL(formData.img)
+                                  : formData.img
+                              }
+                              alt="Event Preview"
+                              style={{
+                                width: "100%",
+                                maxHeight: "150px",
+                                objectFit: "cover",
+                                borderRadius: "8px",
+                              }}
+                            />
+                          </div>
+                        )}
                         <input
                           type="file"
                           name="img"
@@ -340,7 +422,7 @@ export default function ManageEvents() {
                           className="file-upload-label"
                         >
                           {formData.img
-                            ? "✓ تم اختيار غلاف الفعالية"
+                            ? " تغيير غلاف الفعالية"
                             : "اختر صورة الغلاف من جهازك"}
                         </label>
                       </div>
@@ -377,6 +459,24 @@ export default function ManageEvents() {
                     <div className="form-group">
                       <label>صورة المتحدث الشخصية</label>
                       <div className="file-upload-wrapper">
+                        {formData.speakerImg && (
+                          <div style={{ marginBottom: "10px" }}>
+                            <img
+                              src={
+                                formData.speakerImg instanceof File
+                                  ? URL.createObjectURL(formData.speakerImg)
+                                  : formData.speakerImg
+                              }
+                              alt="Speaker Preview"
+                              style={{
+                                width: "80px",
+                                height: "80px",
+                                borderRadius: "50%",
+                                objectFit: "cover",
+                              }}
+                            />
+                          </div>
+                        )}
                         <input
                           type="file"
                           name="speakerImg"
@@ -389,7 +489,7 @@ export default function ManageEvents() {
                           className="file-upload-label"
                         >
                           {formData.speakerImg
-                            ? "✓ تم اختيار صورة المتحدث"
+                            ? " تغيير صورة المتحدث"
                             : "اختر صورة المتحدث من جهازك"}
                         </label>
                       </div>

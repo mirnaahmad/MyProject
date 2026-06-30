@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Calendar,
@@ -11,33 +11,113 @@ import {
   Ticket,
 } from "lucide-react";
 import NetworkCanvas from "../components/NetworkCanvas";
-import { EVENTS, ARCHIVE_EVENTS } from "../data/mockData";
+import Notification from "../components/Notification";
 import RegistrationModal from "../components/RegistrationModal";
+import api from "../api";
 import "../styles/Event.css";
 
 export default function EventsPage() {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [notification, setNotification] = useState(null);
   const [selectedEventTitle, setSelectedEventTitle] = useState("");
+  const [events, setEvents] = useState([]);
+  const [statusMap, setStatusMap] = useState({});
   const [selectedEventId, setSelectedEventId] = useState(null);
-  const [registeredEvents, setRegisteredEvents] = useState(() => {
-    const saved = localStorage.getItem("registeredEvents");
-    return saved ? JSON.parse(saved) : [];
-  });
-  const [inputsData, setInputsData] = useState({
-    name: "",
-    email: "",
-    contact: "",
-  });
-  const featuredEvent = EVENTS.find((e) => e.featured);
-
+  const [archiveEvents, setArchiveEvents] = useState([]);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   useEffect(() => {
-    localStorage.setItem("registeredEvents", JSON.stringify(registeredEvents));
-  }, [registeredEvents]);
-  
+    const fetchAllEventsWithStatus = async () => {
+      try {
+        const res = await api.get("/events/active");
+        const eventsData = res.data;
+        setEvents(res.data);
+
+        console.log("Events data being processed:", eventsData);
+        const statusRequests = eventsData.map(async (event) => {
+          try {
+            const statusRes = await api.get(`/events/status/${event.id}`);
+            return { id: event.id, status: statusRes.data };
+          } catch (err) {
+            console.log("Error ", err);
+            return { id: event.id, status: null }; // في حال فشل طلب حالة واحدة
+          }
+        });
+        const results = await Promise.all(statusRequests);
+
+        const newStatusMap = {};
+
+        results.forEach((item) => {
+          newStatusMap[item.id] = item.status;
+        });
+
+        setStatusMap(newStatusMap);
+      } catch (err) {
+        console.error("خطأ في جلب بيانات الفعاليات", err);
+      }
+    };
+
+    const fetchArchive = async () => {
+      try {
+        const res = await api.get("/events/archive");
+
+        setArchiveEvents(res.data);
+      } catch (err) {
+        console.log("خطأ في جلب الأرشيف:", err);
+      }
+    };
+    fetchAllEventsWithStatus();
+    fetchArchive();
+  }, [navigate, refreshTrigger]);
+
+  const handleDetailsClick = (e) => {
+    if (!localStorage.getItem("token")) {
+      e.preventDefault();
+      navigate("/auth");
+    }
+  };
+  const handleRegisterClick = (event) => {
+    if (!localStorage.getItem("token")) {
+      navigate("/auth");
+      return;
+    }
+    setSelectedEventTitle(event.title);
+    setSelectedEventId(event.id);
+    setIsOpen(true);
+  };
+  const handleCancelRegistration = async (eventId) => {
+    console.log("ID المبعوث هو:", eventId);
+    try {
+      await api.post("/events/cancel", { event_id: eventId });
+      setRefreshTrigger((prev) => prev + 1);
+      setNotification({
+        message: "تم إلغاء التسجيل بنجاح",
+        type: "success",
+      });
+    } catch (err) {
+      console.error("خطأ في إلغاء التسجيل:", err);
+      setNotification({
+        message: "خطأ في إلغاء التسجيل ",
+        type: "error",
+      });
+    }
+  };
+  const handleRegistrationSuccess = () => {
+    setTimeout(() => {
+      setRefreshTrigger((prev) => prev + 1);
+    }, 500);
+  };
+  const featuredEvent = events.find((e) => e.featured);
   return (
     <>
       {/* ── HERO ── */}
+      {notification && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={() => setNotification(null)}
+        />
+      )}
       <section className="page-hero" style={{ height: "300px" }}>
         <NetworkCanvas />
         <div className="container page-hero-content">
@@ -85,6 +165,7 @@ export default function EventsPage() {
                 >
                   {featuredEvent.title}
                 </h3>
+
                 <p
                   style={{
                     color: "var(--blue-200)",
@@ -139,23 +220,34 @@ export default function EventsPage() {
                   </span>
                 </div>
                 <div style={{ display: "flex", gap: "12px" }}>
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => {
-                      setSelectedEventTitle(featuredEvent.title);
-                      // setEventLink(featuredEvent.eventLink);
-                      setSelectedEventId(featuredEvent.id);
-                      setIsSuccess(registeredEvents.includes(featuredEvent.id));
-                      setIsOpen(true);
-                    }}
-                    style={{ borderRadius: "11px" }}
-                  >
-                    <Ticket size={16} />
-                    تسجيل الآن
-                  </button>
+                  {!statusMap[featuredEvent.id]?.isExpired && (
+                    <button
+                      className="btn btn-primary"
+                      disabled={
+                        statusMap[featuredEvent.id]?.isFull &&
+                        !statusMap[featuredEvent.id]?.isRegistered
+                      }
+                      onClick={() => {
+                        if (statusMap[featuredEvent.id]?.isRegistered) {
+                          handleCancelRegistration(featuredEvent.id);
+                        } else {
+                          handleRegisterClick(featuredEvent);
+                        }
+                      }}
+                      style={{ borderRadius: "11px" }}
+                    >
+                      <Ticket size={16} />
+                      {statusMap[featuredEvent.id]?.isRegistered
+                        ? "انسحاب"
+                        : statusMap[featuredEvent.id]?.isFull
+                          ? "ممتلئة"
+                          : "تسجيل الآن"}
+                    </button>
+                  )}
                   <Link
-                    style={{ borderRadius: "11px" }}
                     to={`/events/${featuredEvent.id}`}
+                    onClick={(e) => handleDetailsClick(e)}
+                    style={{ borderRadius: "11px" }}
                     className="btn btn-outline-blue"
                   >
                     <Info size={16} /> تفاصيل
@@ -163,8 +255,8 @@ export default function EventsPage() {
                 </div>
               </div>
               <img
-                src={featuredEvent.speakerImg}
-                alt={featuredEvent.speaker}
+                src={`http://localhost:4000${featuredEvent.speakerImg}`}
+                alt={`http://localhost:4000${featuredEvent.img}`}
                 className="d-none-mobile speakerImage"
               />
             </motion.div>
@@ -174,130 +266,144 @@ export default function EventsPage() {
           <div
             style={{ display: "flex", flexDirection: "column", gap: "16px" }}
           >
-            {EVENTS.map((event) => (
-              <motion.div
-                key={event.id}
-                layout
-                initial={{ opacity: 0, y: 50, scale: 0.85 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                whileHover={{
-                  scale: 1.02,
-                  boxShadow: "0px 10px 30px rgba(255, 255,255,0.05)",
-                }}
-                transition={{ duration: 0.2 }}
-                className="card"
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "auto 1fr auto",
-                  gap: "24px",
-                  alignItems: "center",
-                  padding: "22px 28px",
-                }}
-              >
-                <img
-                  src={event.speakerImg}
-                  alt={event.speaker}
-                  className="d-none-mobile speakerImage"
-                />
+            {events
+              .filter((e) => !statusMap[e.id]?.isExpired)
+              .map((event) => (
+                <motion.div
+                  key={event.id}
+                  layout
+                  initial={{ opacity: 0, y: 50, scale: 0.85 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  whileHover={{
+                    scale: 1.02,
+                    boxShadow: "0px 10px 30px rgba(255, 255,255,0.05)",
+                  }}
+                  transition={{ duration: 0.2 }}
+                  className="card"
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "auto 1fr auto",
+                    gap: "24px",
+                    alignItems: "center",
+                    padding: "22px 28px",
+                  }}
+                >
+                  <img
+                    src={`http://localhost:4000${event.speakerImg}`}
+                    alt={`http://localhost:4000${event.Img}`}
+                    className="d-none-mobile speakerImage"
+                  />
 
-                <div>
-                  <h4
-                    style={{
-                      fontSize: "1.3rem",
-                      fontWeight: 800,
-                      marginBottom: "8px",
-                    }}
-                  >
-                    {event.title}
-                  </h4>
-                  <div
-                    style={{
-                      display: "flex",
-
-                      fontSize: ".9rem",
-                      color: "var(--gray-400)",
-                    }}
-                  >
-                    <span
+                  <div>
+                    <h4
+                      style={{
+                        fontSize: "1.3rem",
+                        fontWeight: 800,
+                        marginBottom: "8px",
+                      }}
+                    >
+                      {event.title}
+                    </h4>
+                    <div
                       style={{
                         display: "flex",
-                        alignItems: "center",
-                        gap: "4px",
-                      }}
-                    >
-                      <Users size={14} color="var(--accent)" /> {event.speaker}
-                    </span>
-                  </div>
-                </div>
 
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "24px",
-                  }}
-                  className="row-to-col"
-                >
-                  <div style={{ textAlign: "center", minWidth: "70px" }}>
-                    <div
-                      style={{
-                        fontSize: ".7rem",
-                        fontWeight: 700,
-                        background: "var(--accent)",
-                        color: "#fff",
-                        padding: "3px 10px",
-                        borderRadius: "8px 8px 0 0",
+                        fontSize: ".9rem",
+                        color: "var(--gray-400)",
                       }}
                     >
-                      {event.date.split(" ")[1]}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: "1.8rem",
-                        fontWeight: 900,
-                        background: "var(--navy-600)",
-                        borderRadius: "0 0 8px 8px",
-                        lineHeight: 1,
-                        padding: "6px 0",
-                      }}
-                    >
-                      {event.date.split(" ")[0]}
+                      <span
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "4px",
+                        }}
+                      >
+                        <Users size={14} color="var(--accent)" />{" "}
+                        {event.speaker}
+                      </span>
                     </div>
                   </div>
 
                   <div
                     style={{
                       display: "flex",
-                      flexDirection: "column",
-                      gap: "8px",
+                      alignItems: "center",
+                      gap: "24px",
                     }}
-                    className="actions-group"
+                    className="row-to-col"
                   >
-                    <button
-                      className="btn btn-primary"
-                      onClick={() => {
-                        setSelectedEventTitle(event.title);
+                    <div style={{ textAlign: "center", minWidth: "70px" }}>
+                      <div
+                        style={{
+                          fontSize: ".7rem",
+                          fontWeight: 700,
+                          background: "var(--accent)",
+                          color: "#fff",
+                          padding: "3px 10px",
+                          borderRadius: "8px 8px 0 0",
+                        }}
+                      >
+                        {event.date.split(" ")[1]}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: "1.8rem",
+                          fontWeight: 900,
+                          background: "var(--navy-600)",
+                          borderRadius: "0 0 8px 8px",
+                          lineHeight: 1,
+                          padding: "6px 0",
+                        }}
+                      >
+                        {event.date.split(" ")[0]}
+                      </div>
+                    </div>
 
-                        setSelectedEventId(event.id);
-                        setIsSuccess(registeredEvents.includes(event.id));
-                        setIsOpen(true);
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "8px",
                       }}
+                      className="actions-group"
                     >
-                      احجز
-                    </button>
-                    <Link
-                      to={`/events/${event.id}`}
-                      className="btn btn-ghost btn-sm"
-                      style={{ width: "100px" }}
-                    >
-                      تفاصيل
-                    </Link>
+                      {statusMap[event.id]?.isExpired ? null : (
+                        <button
+                          className="btn btn-primary"
+                          disabled={
+                            statusMap[event.id]?.isFull &&
+                            !statusMap[event.id]?.isRegistered
+                          }
+                          onClick={() => {
+                            if (statusMap[event.id]?.isRegistered) {
+                              handleCancelRegistration(event.id);
+                            } else {
+                              handleRegisterClick(event);
+                            }
+                          }}
+                        >
+                          {statusMap[event.id]?.isRegistered
+                            ? " انسحاب"
+                            : statusMap[event.id]?.isFull
+                              ? "ممتلئة"
+                              : "احجز"}
+                        </button>
+                      )}
+                      <Link
+                        to={`/events/${event.id}`}
+                        onClick={(e) => handleDetailsClick(e)}
+                        className="btn btn-ghost btn-sm"
+                        style={{ width: "100px" }}
+                      >
+                        تفاصيل
+                      </Link>
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              ))}
 
-            {EVENTS.length === 0 && (
+            {events.length === 0 && (
               <p
                 style={{
                   textAlign: "center",
@@ -324,54 +430,58 @@ export default function EventsPage() {
               gap: "20px",
             }}
           >
-            {ARCHIVE_EVENTS.map((item, i) => (
-              <motion.div
-                key={item.id}
-                className="card"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false }}
-                transition={{ delay: i * 0.05 }}
-              >
-                <img
-                  src={item.img}
-                  alt={item.title}
-                  style={{
-                    width: "100%",
-                    height: "160px",
-                    objectFit: "cover",
-                    filter: "brightness(.8) saturate(.8)",
-                    borderRadius: "var(--radius-md) var(--radius-md) 0 0",
-                  }}
-                />
-                <div style={{ padding: "16px" }}>
-                  <h4
+            {archiveEvents.length > 0 ? (
+              archiveEvents.map((item, i) => (
+                <motion.div
+                  key={item.id}
+                  className="card"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: false }}
+                  transition={{ delay: i * 0.05 }}
+                >
+                  <img
+                    src={`http://localhost:4000${item.img}`}
+                    alt={item.title}
                     style={{
-                      fontSize: ".9rem",
-                      fontWeight: 700,
-                      marginBottom: "6px",
-                      whiteSpace: "nowrap",
-                      textOverflow: "ellipsis",
-                      // بحط تلت نقاط
-                      overflow: "hidden",
+                      width: "100%",
+                      height: "160px",
+                      objectFit: "cover",
+                      filter: "brightness(.8) saturate(.8)",
+                      borderRadius: "var(--radius-md) var(--radius-md) 0 0",
                     }}
-                  >
-                    {item.title}
-                  </h4>
-                  <div
-                    style={{
-                      fontSize: ".75rem",
-                      color: "var(--gray-400)",
-                    }}
-                  >
-                    <span>
-                      <Calendar size={12} style={{ marginRight: 3 }} />{" "}
-                      {item.date}
-                    </span>
+                  />
+                  <div style={{ padding: "16px" }}>
+                    <h4
+                      style={{
+                        fontSize: ".9rem",
+                        fontWeight: 700,
+                        marginBottom: "6px",
+                        whiteSpace: "nowrap",
+                        textOverflow: "ellipsis",
+                        // بحط تلت نقاط
+                        overflow: "hidden",
+                      }}
+                    >
+                      {item.title}
+                    </h4>
+                    <div
+                      style={{
+                        fontSize: ".75rem",
+                        color: "var(--gray-400)",
+                      }}
+                    >
+                      <span>
+                        <Calendar size={12} style={{ marginRight: 3 }} />{" "}
+                        {item.date}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              ))
+            ) : (
+              <p style={{ color: "white" }}>لا توجد فعاليات في الأرشيف.</p>
+            )}
           </div>
         </div>
       </section>
@@ -381,9 +491,9 @@ export default function EventsPage() {
           .d-none-mobile { display: none !important;  }
           .section {padding:40px 0;}
           .card {
-          grid-template-columns: 1fr auto !important
-          gap:12px !important
-          padding:12px 16px !important
+          grid-template-columns: 1fr auto !important;
+          gap:12px !important;
+          padding:12px 16px !important;
           margin-bottom:12px;
           }
           .card h4{
@@ -418,13 +528,9 @@ export default function EventsPage() {
       {isOpen && (
         <RegistrationModal
           setIsOpen={setIsOpen}
-          isSuccess={isSuccess}
-          setIsSuccess={setIsSuccess}
-          inputsData={inputsData}
-          setInputsData={setInputsData}
+          onSuccess={handleRegistrationSuccess}
           selectedEventTitle={selectedEventTitle}
           eventId={selectedEventId}
-          setRegisteredEvents={setRegisteredEvents}
         />
       )}
     </>
