@@ -230,7 +230,7 @@ export default function HomePage() {
                 >
                   <div className="event-card-img-wrap">
                     <img
-                      src={`http://localhost:4000${act.img}`}
+                      src={act.img}
                       alt={act.title}
                       className="event-card-img"
                     />
