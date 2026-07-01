@@ -41,18 +41,31 @@ export default function ManageEvents() {
   const handleEditClick = (event) => {
     setIsEditing(true);
 
-    const poster =
-      event.media && event.media[0] ? event.media[0].mediaUrl : null;
-    const speakerImage =
-      event.media && event.media[1] ? event.media[1].mediaUrl : null;
+    const posterItem = event.media?.find(
+      (m) => m.mediaType === "event_poster" || m.mediaType === "image",
+    );
+    const speakerItem = event.media?.find(
+      (m) => m.mediaType === "speaker_image",
+    );
+
+    const poster = posterItem ? posterItem.mediaUrl : null;
+    const speakerImage = speakerItem ? speakerItem.mediaUrl : null;
 
     setFormData({
       ...event,
 
       agenda: event.agenda ? event.agenda.join("\n") : "",
 
-      img: poster ? `http://localhost:4000/${poster}` : null,
-      speakerImg: speakerImage ? `http://localhost:4000/${speakerImage}` : null,
+      img: poster
+        ? poster.startsWith("http")
+          ? poster
+          : `http://localhost:4000${poster}`
+        : null,
+      speakerImg: speakerImage
+        ? speakerImage.startsWith("http")
+          ? speakerImage
+          : `http://localhost:4000${speakerImage}`
+        : null,
     });
 
     setActiveTab("info");
@@ -116,10 +129,16 @@ export default function ManageEvents() {
 
     if (formData.img instanceof File) {
       formDataToSend.append("images", formData.img);
+      formDataToSend.append("hasNewPoster", "true");
+    } else {
+      formDataToSend.append("hasNewPoster", "false");
     }
 
     if (formData.speakerImg instanceof File) {
       formDataToSend.append("images", formData.speakerImg);
+      formDataToSend.append("hasNewSpeaker", "true");
+    } else {
+      formDataToSend.append("hasNewSpeaker", "false");
     }
 
     try {
@@ -414,6 +433,7 @@ export default function ManageEvents() {
                           type="file"
                           name="img"
                           accept="image/*"
+                          required
                           onChange={handleInputChange}
                           id="event-img-file"
                         />

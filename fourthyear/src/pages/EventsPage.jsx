@@ -31,7 +31,7 @@ export default function EventsPage() {
       try {
         const res = await api.get("/events/active");
         const eventsData = res.data;
-        setEvents(res.data);
+        setEvents(eventsData);
 
         console.log("Events data being processed:", eventsData);
         const statusRequests = eventsData.map(async (event) => {
@@ -255,8 +255,8 @@ export default function EventsPage() {
                 </div>
               </div>
               <img
-                src={`http://localhost:4000${featuredEvent.speakerImg}`}
-                alt={`http://localhost:4000${featuredEvent.img}`}
+                src={featuredEvent.speakerImg}
+                alt={featuredEvent.img}
                 className="d-none-mobile speakerImage"
               />
             </motion.div>
@@ -289,8 +289,8 @@ export default function EventsPage() {
                   }}
                 >
                   <img
-                    src={`http://localhost:4000${event.speakerImg}`}
-                    alt={`http://localhost:4000${event.Img}`}
+                    src={event.speakerImg}
+                    alt={event.Img}
                     className="d-none-mobile speakerImage"
                   />
 
@@ -441,7 +441,7 @@ export default function EventsPage() {
                   transition={{ delay: i * 0.05 }}
                 >
                   <img
-                    src={`http://localhost:4000${item.img}`}
+                    src={item.img}
                     alt={item.title}
                     style={{
                       width: "100%",

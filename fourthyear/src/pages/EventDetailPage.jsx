@@ -272,7 +272,7 @@ export default function EventDetailPage() {
                         style={{ height: "140px" }}
                       >
                         <img
-                          src={`http://localhost:4000${rel.img}`}
+                          src={rel.img}
                           alt={rel.title}
                           className="event-card-img"
                         />
@@ -311,7 +311,7 @@ export default function EventDetailPage() {
             >
               <div className="card" style={{ padding: "28px" }}>
                 <img
-                  src={`http://localhost:4000${event.speakerImg}`}
+                  src={event.speakerImg}
                   alt={event.speaker}
                   style={{
                     width: "300px",
